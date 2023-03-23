@@ -1,0 +1,257 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SQL注入 | ...</title>
+<link rel="shortcut icon" href="https://hellow-word578.github.io/favicon.ico?v=1679558347519">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://hellow-word578.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="SQL注入 | ... - Atom Feed" href="https://hellow-word578.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="一、Sql注入简介
+Sql 注入攻击是通过将恶意的 Sql 查询或添加语句插入到应用的输入参数中，再在后台 Sql 服务器上解析执行进行的攻击，它目前黑客对数据库进行攻击的最常用手段之一。
+SQL注入漏洞的产生需要满足以下两个条件：
+1、参..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://hellow-word578.github.io">
+  <img class="avatar" src="https://hellow-word578.github.io/images/avatar.png?v=1679558347519" alt="">
+  </a>
+  <h1 class="site-title">
+    ...
+  </h1>
+  <p class="site-description">
+    ...
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              SQL注入
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-04-21
+              </span>
+              <span>
+                7 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <p><strong>一、Sql注入简介</strong></p>
+<p>Sql 注入攻击是通过将恶意的 Sql 查询或添加语句插入到应用的输入参数中，再在后台 Sql 服务器上解析执行进行的攻击，它目前黑客对数据库进行攻击的最常用手段之一。</p>
+<p><code>SQL注入漏洞的产生需要满足以下两个条件：</code><br>
+1、参数用户可控：前端传给后端的参数内容是用户可以控制的。<br>
+2、参数带入数据库查询：传入的参数拼接到SQL语句，并且带入数据库查询。</p>
+<p>url中?代表传值的意思，id代表变量，后面的&quot;=&quot;代表变量的值<br>
+联合查询union或者union all 只能用来执行查询语句，而堆叠注入可以用来执行任意的语句。</p>
+<p><code>Sql 注入带来的威胁主要有如下几点</code></p>
+<pre><code>猜解后台数据库，这是利用最多的方式，盗取网站的敏感信息。
+绕过认证，列如绕过验证登录网站后台。
+注入可以借助数据库的存储过程进行提权等操作
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://hellow-word578.github.io/post-images/1679547544389.png" alt="" loading="lazy"></figure>
+<p><code>数字型：</code></p>
+<p>当输入的参数为整形时，若存在注入漏洞，则是数字型注入。</p>
+<p>如：https://blog.csdn.net/aboutus.php?id=1</p>
+<p>此时后台语句：$sql=“SELECT 123 FROM abc WHERE id='1 '&quot;</p>
+<p>检测方法：URL输入 and 1=1 / and 1=2 报错则说明有注入<br>
+<code>字符型</code></p>
+<p>当输入参数为字符串时，称为字符型注入。</p>
+<p>它与数字型的区别：数字型不需要单引号来闭合，而字符串需要单引号来闭合。</p>
+<p>例：https://blog.csdn.net/aboutus.php?id=1’</p>
+<p>此时后台语句：$sql=“SELECT 123 FROM abc WHERE id='1 ’ ’ &quot;</p>
+<p>此时多出了一个单引号，破坏了原本的SQL语句结构，数据库无法处理，于是会报错，证明这条语句成功被带进数据库查询,存在字符型注入。</p>
+<p>此时通过 --+把后面的单引号注释掉，SQL语句也会形成闭合。</p>
+<p>所以我们可以这样：</p>
+<p>?id = 1’ 攻击语句 --+</p>
+<p>传入页面就变成了</p>
+<p>select user from database where id = ‘1’ 攻击语句 – ’</p>
+<p>–+：起注释作用，将后面的语句注释掉，在url中+相当于空格，–是注释符号，单行注释，之所以要加+号是因为–与单引号连在一起无法起注释作用因此必须把它们隔开<br>
+联合查询注入</p>
+<p>联合查询适合于有显示位的注入，即页面某个位置会根据我们输入的数据的变化而变化。</p>
+<pre><code>页面观察
+</code></pre>
+<p>输入id=1和id=2，若页面中值有变化，说明输入与数据库有交互</p>
+<pre><code>注入点判断
+</code></pre>
+<p>直接输入?id=1’若有报错则存在注入，开始判断可以从哪里注入，?id=2’1=2–+页面显示不正常，说明此处存在SQL注入，注入点在引号。</p>
+<p>接下来开始使用SQL语句进行攻击。</p>
+<pre><code>使用order by判断当前表的字段个数
+</code></pre>
+<p>例：?id=1 order by n --+</p>
+<p>若n超过当前表的列数，就会报错，说明表中只有n-1列</p>
+<pre><code>判断显示位
+</code></pre>
+<p>判断显示位时，要使用 ?id=-1 或者改为0 让前面的select语句查询为空错误，然后采用后面的select语句去查询：</p>
+<p>?id=-1’ union select 1,2,3 --+</p>
+<p>观察页面在哪里回显我们的输入，就可以用那个地方测试接下的语句。</p>
+<pre><code>爆数据库的名字
+</code></pre>
+<p>?id=1’ union select 1,database(),3 --+</p>
+<p>在之前回显2的地方会回显database数据库的名字。</p>
+<pre><code>爆数据库中的表
+</code></pre>
+<p>?id=1’ union select 1,group_concat(table_name),3 from information_schema.tables where table_schema=database() --+</p>
+<p>数据库语句懒得解释了。</p>
+<pre><code>爆表中的字段
+</code></pre>
+<p>?id=1’ union select 1,group_concat(column_name),3 from information_schema.column where table_schema=’爆出来的数据库名‘ and table_name=‘爆出来的表名’ --+</p>
+<pre><code>爆相应字段的所有数据
+</code></pre>
+<p>?id=-1’ union select 1,group_concat(id,’–‘,username,’–',password),3 from users --+<br>
+报错注入</p>
+<p>含义：就是在mysql中使用指定函数来制造报错，查询的时候加一些格式错误的信息，它会提示你格式错误，可以在中间加入一些其他信息，比如select database(),报错信息后面也会出现数据库信息.</p>
+<p>报错注入：利用数据库的报错信息得到数据库的内容。因此需要构造语句让数据库报错。</p>
+<p><code>三种报错注入的方法：</code><br>
+group by 重复健冲</p>
+<p>and (select 1 from (select count(*),concat((select 查询的内容 from information_schema.tables limit 0,1),floor(rand()*2))x from information_schema.table group by x)a) --+</p>
+<p>extractvalue()函数<br>
+?id=1' and extractvalue(1,concat('^',(select database()),'^')) --+//获取数据库名</p>
+<p>extractvalue(xml_frag,xpath_expr)；</p>
+<p>函数接受两个参数，第一个为XML标记内容，也就是查询的内容，第二个为XPATH路径，也就是查询的路径。</p>
+<p>如果没有匹配的内容，不管出于何种原因，只要路径有效并且查询的内容由正确嵌套和关闭的元素组成，返回空字符串。</p>
+<p>但如果路径写入错误格式，就会报错并且返回我们写入的非法内容。</p>
+<p>updatexml()函数<br>
+updatexml(xml_target,xpath_expr,new_xml)；</p>
+<p>此函数将XML标记的给定片段的单个部分替换为xml_target新的XML片段new_xml，然后返回更改的XML。</p>
+<p>xml_target替换的部分 与xpath_expr 用户提供的XPath表达式匹配。如果未xpath_expr找到表达式匹配 ，或者找到多个匹配项，则该函数返回原始 xml_targetXML片段。</p>
+<p>所有三个参数都应该是字符串。与extractvalue()类似，如果XPATH写入错误格式，就会报错，并且返回我们写入的非法内容。</p>
+<p>回显注入</p>
+<p>回显注入：利用注入漏洞可以改变页面返回数据。<br>
+基于布尔的盲注</p>
+<p>布尔盲注：即在页面不显示数据，只显示对错，此时我们输入的语句让页面呈现两种状态，相当于true和false，根据这两种状态判断我们输入的语句是否查询成功。</p>
+<p>因此需要构造判断语句，根据页面是否回显证实猜想。</p>
+<p>一般用到的函数：</p>
+<p>ascii()、 substr()、length()、exists()、concat()等。</p>
+<p>**substr(strings|express,m,[n])**函数：</p>
+<p>strings|express ：被截取的字符串或字符串表达式</p>
+<p>m 从第m个字符开始截取</p>
+<p>n 截取后字符串长度为n</p>
+<p>concat()函数：concat ()方法用于连接两个或多个数组。用于输出在页面中。</p>
+<p>步骤：</p>
+<pre><code>判断数据库类型
+</code></pre>
+<p>数据库可能的类型：</p>
+<p>MySQL、 access、 SQL sever 、information_schema.tables、msysobjects、sysobjects</p>
+<pre><code>判断数据库名（数据库名长度、每个ASCII值）
+判断库中的表名（表的个数、每个表名的长度和表名的ASCII）
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://hellow-word578.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

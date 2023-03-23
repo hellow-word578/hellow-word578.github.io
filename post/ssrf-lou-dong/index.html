@@ -1,0 +1,202 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SSRF漏洞 | ...</title>
+<link rel="shortcut icon" href="https://hellow-word578.github.io/favicon.ico?v=1679558347519">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://hellow-word578.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="SSRF漏洞 | ... - Atom Feed" href="https://hellow-word578.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+比如,黑客操作服务端从指定URL地址获取网页文本内容，加载指定地址的图片，下载等等。利用的是服务端的请求伪造。ssrf是利用存在缺陷的web应用作为代理攻击远程和本地的服务器
+• SSRF(Server-Side Request Forg..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://hellow-word578.github.io">
+  <img class="avatar" src="https://hellow-word578.github.io/images/avatar.png?v=1679558347519" alt="">
+  </a>
+  <h1 class="site-title">
+    ...
+  </h1>
+  <p class="site-description">
+    ...
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              SSRF漏洞
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-04-23
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <p><img src="https://hellow-word578.github.io/post-images/1679551605635.png" alt="" loading="lazy"><br>
+比如,黑客操作服务端从指定URL地址获取网页文本内容，加载指定地址的图片，下载等等。利用的是服务端的请求伪造。ssrf是利用存在缺陷的web应用作为代理攻击远程和本地的服务器</p>
+<pre><code>• SSRF(Server-Side Request Forgery:服务器端请求伪造) 是一种由攻击者构造形成由服务端发起请求的一个安全漏洞。
+    一般情况下，SSRF攻击的目标是从外网无法访问的内部系统。（正是因为     
+</code></pre>
+<p>它是由服务端发起的，所以它能够请求到与它相连而与外网隔离的内部系统）</p>
+<pre><code>• SSRF漏洞利用（危害）
+</code></pre>
+<p>1.可以对外网、服务器所在内网、本地进行端口扫描，获取一些服务的banner信息;</p>
+<p>2.攻击运行在内网或本地的应用程序（比如溢出）;</p>
+<p>3.对内网web应用进行指纹识别，通过访问默认文件实现;</p>
+<p>4.攻击内外网的web应用，主要是使用get参数就可以实现的攻击（比如struts2，sqli等）;</p>
+<p>5.利用file协议读取本地文件等。.</p>
+<p>6.各个协议调用探针：http,file,dict,ftp,gopher等</p>
+<p>http:192.168.64.144/phpmyadmin/<br>
+file:///D:/www.txt<br>
+dict://192.168.64.144:3306/info<br>
+ftp://192.168.64.144:21</p>
+<pre><code>• 目前常见的漏洞挖掘方式有两种：
+</code></pre>
+<p>1、从web功能上挖掘<br>
+①分享：通过url地址分享网页内容<br>
+②转码服务<br>
+③在线翻译<br>
+④图片的下载与加载<br>
+⑤图片、文章收藏功能<br>
+⑥未公开的API实现及调用URL的功能　　　　　　　　　　　　　　　　　　　　　　　　<br>
+2、从URL关键字挖掘<br>
+Share、wap、url、link、src、source、target、u、3g、display、sourceURL、imageURL、domain……<br>
+• SSRF防御</p>
+<p>SSRF漏洞的防御主要是保证用户请求的合法性、服务器行为的合规性两个方面。<br>
+1、限制请求端口只能为web端口，只允许访问HTTP和HTTPS的请求；<br>
+2、过滤返回的信息；<br>
+3、禁止不常使用的端口；<br>
+4、限制不能访问内网的IP，防止对内网进行攻击；<br>
+5、对于DNS重绑定，使用DNS缓存或者Host白名单。</p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://hellow-word578.github.io/post/sql-zhu-ru/">
+              <h3 class="post-title">
+                SQL注入
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://hellow-word578.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,192 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>越权漏洞 | ...</title>
+<link rel="shortcut icon" href="https://hellow-word578.github.io/favicon.ico?v=1679558347519">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://hellow-word578.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="越权漏洞 | ... - Atom Feed" href="https://hellow-word578.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="• 越权访问（Broken Access Control，简称BAC）是Web应用程序中一种常见的漏洞
+
+• 越权访问漏洞的产生
+
+比如，某个订单系统，用户可以查询自己的订单信息。A用户查询订单时，发送的HTTP请求中包含参数orderid..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://hellow-word578.github.io">
+  <img class="avatar" src="https://hellow-word578.github.io/images/avatar.png?v=1679558347519" alt="">
+  </a>
+  <h1 class="site-title">
+    ...
+  </h1>
+  <p class="site-description">
+    ...
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              越权漏洞
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-05-29
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <pre><code>• 越权访问（Broken Access Control，简称BAC）是Web应用程序中一种常见的漏洞
+
+• 越权访问漏洞的产生
+</code></pre>
+<p>比如，某个订单系统，用户可以查询自己的订单信息。A用户查询订单时，发送的HTTP请求中包含参数orderid=A，订单系统取得orderid后最终会查询数据库，查询语句类似于select * from tablename where orderid = A。B用户查询订单时，发送的HTTP请求中包含参数orderid=B，系统查询数据库语句类似于select * from tablename where orderid = B。正常情况下，每个用户只会查询到自己的订单。但是，当B用户将自己的HTTP请求参数修改为orderid=A，那么最终B用户执行的数据库语句变成了select * from tablename whereorderid = A，导致A的订单信息被B用户获取到了。(小迪称为水平越权访问)<br>
+• 常见越权漏洞</p>
+<pre><code>- 通过修改GET传参来越权。
+
+- 修改POST传参进行越权。 
+
+- 修改cookie传参进行越权。
+
+- 抓取传参可以在浏览器、APP、应用程序exe 
+
+- 未授权访问。严格意义上而言这个不属于越权漏洞，但是在日常测试中常常会遇见。只要输入正确的网址就可以直接访问，例如/admin默认是登录，登录后跳转到user.php,然后你直接访问user.php，发现你直接有后台权限。
+
+- 业务逻辑绕过。
+</code></pre>
+<p>垂直越权<br>
+概述<br>
+权限较低的用户去执行高权限用户的操作。</p>
+<p>修复建议</p>
+<p>越权访问漏洞产生的主要原因是因为没有对用户的身份做判断和控制，防护这种漏洞是，可以使用session【当访问服务器某个网页的时候,会在服务器端的内存里开辟一块内存，这块内存就叫做`SESSION】来控制，例如用户在登录成功后， 将用户名写入session中，当用户查看个人信息时，通过session中取出username，而不是从GET或者POST中取到username，那么此时的username就不会被篡改了</p>
+<p>https://blog.csdn.net/m0_55854679/article/details/115276980?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167198249816782427422609%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=167198249816782427422609&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2<sub>all</sub>sobaiduend~default-2-115276980-null-null.142<sup>v68</sup>pc_new_rank,201<sup>v4</sup>add_ask,213<sup>v2</sup>t3_control2&amp;utm_term=web%E8%B6%8A%E6%9D%83%E6%BC%8F%E6%B4%9E&amp;spm=1018.2226.3001.4187</p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://hellow-word578.github.io/post/csrf-lou-dong/">
+              <h3 class="post-title">
+                CSRF漏洞
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://hellow-word578.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

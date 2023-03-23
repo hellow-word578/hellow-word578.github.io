@@ -1,0 +1,188 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RCE代码及命令执行漏洞 | ...</title>
+<link rel="shortcut icon" href="https://hellow-word578.github.io/favicon.ico?v=1679558347519">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://hellow-word578.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="RCE代码及命令执行漏洞 | ... - Atom Feed" href="https://hellow-word578.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="• 产生原因
+
+在Web应用中有时候程序员为了考虑灵活性、简洁性，会在代码调用代码或命令执行执行函数去处理。如当应用在调用一些能将字符串转化成代码的函数时，没有考虑用户是否能控制这个字符串，将造成代码执行漏洞。同样调用系统命令处理，将命令执..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://hellow-word578.github.io">
+  <img class="avatar" src="https://hellow-word578.github.io/images/avatar.png?v=1679558347519" alt="">
+  </a>
+  <h1 class="site-title">
+    ...
+  </h1>
+  <p class="site-description">
+    ...
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              RCE代码及命令执行漏洞
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-05-03
+              </span>
+              <span>
+                1 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <pre><code>• 产生原因
+</code></pre>
+<p>在Web应用中有时候程序员为了考虑灵活性、简洁性，会在代码调用代码或命令执行执行函数去处理。如当应用在调用一些能将字符串转化成代码的函数时，没有考虑用户是否能控制这个字符串，将造成代码执行漏洞。同样调用系统命令处理，将命令执行漏洞。</p>
+<pre><code>• RCE分为：代码执行、命令执行
+代码执行【危害：执行脚本代码】
+
+    脚本：PHP、Java、Python
+    产生：Web源码、中间件平台等
+    检测
+        白盒：代码审计
+        黑盒：漏洞扫描、公开漏洞、手工看参数值及功能点
+    防御：敏感函数禁用、变量过滤或固定、WAF产品
+
+命令执行【危害：执行系统命令】
+
+    系统：linux、windows
+    产生
+    检测：白盒、黑盒
+    防御：敏感函数禁用、变量过滤或固定、WAF产品
+
+• 漏洞形成条件： 可控变量、漏洞函数
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://hellow-word578.github.io/post/wen-jian-bao-han/">
+              <h3 class="post-title">
+                文件包含
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://hellow-word578.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

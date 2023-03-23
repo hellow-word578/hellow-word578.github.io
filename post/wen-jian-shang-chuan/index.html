@@ -1,0 +1,204 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>文件上传 | ...</title>
+<link rel="shortcut icon" href="https://hellow-word578.github.io/favicon.ico?v=1679558347519">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://hellow-word578.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="文件上传 | ... - Atom Feed" href="https://hellow-word578.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="• 漏洞原理
+
+大部分的网站和应用系统都有上传功能，而程序员在开发文件上传功能时，并未考虑文件格式后缀的合法性校验或者是否只在前端通过js进行后缀检验。
+这时攻击者可以上传一个与网站脚本语言相对应的恶意代码动态脚本，例如(jsp、asp、p..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://hellow-word578.github.io">
+  <img class="avatar" src="https://hellow-word578.github.io/images/avatar.png?v=1679558347519" alt="">
+  </a>
+  <h1 class="site-title">
+    ...
+  </h1>
+  <p class="site-description">
+    ...
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              文件上传
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-06-23
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content" v-pre>
+                <pre><code>• 漏洞原理
+</code></pre>
+<p>大部分的网站和应用系统都有上传功能，而程序员在开发文件上传功能时，并未考虑文件格式后缀的合法性校验或者是否只在前端通过js进行后缀检验。</p>
+<p>这时攻击者可以上传一个与网站脚本语言相对应的恶意代码动态脚本，例如(jsp、asp、php、aspx文件后缀)到服务器上，从而访问这些恶意脚本中包含的恶意代码，进行动态解析最终达到执行恶意代码的效果，进一步影响服务器安全。</p>
+<p>文件上传漏洞是指用户上传了一个可执行的脚本文件，并通过此脚本文件获得了执行服务器端命令的能力。一般都是指“上传Web脚本能够被服务器解析”的问题。<br>
+• 漏洞危害</p>
+<p>可能会导致用户信息泄露，被钓鱼，甚至使攻击者可以直接上传WebShell到服务器，进而得到自己想要的信息和权限。最终达到对数据库执行、服务器文件管理、服务器命令执行等恶意操作，甚至完全控制服务器系统。</p>
+<p>webshell：运行在web应用之上的远程控制程序 。 webshell分为大马、小马等。功能简易的webshell称为小马，拥有较完整功能的webshell，称为大马。</p>
+<p>一句话木马：<br>
+<img src="https://hellow-word578.github.io/post-images/1679558253859.png" alt="" loading="lazy"></p>
+<?php @eval($_POST[a]); ?>
+<script language='php'>@eval($_POST['a']);</script>
+<pre><code>• 文件上传漏洞绕过方式：
+更改这个Content-Type为image/jpeg，即是我们上传的文件格式绕过，这里PHP格式也不行，       一直试到phtml可以（绕过后缀的有文件格式有php,php3,php4,php5,phtml.pht）
+.phtml是PHP 2程序的标准文件扩展名.
+![](https://hellow-word578.github.io/post-images/1679558285404.png)
+	1、前端绕过，抓包修改后缀名，
+
+2、文件内容绕过，用图片马，抓包修改后缀绕过
+
+3、黑名单绕过,那么我们可以改成phtml抓包绕过
+
+4、.htaccess绕过，只要有这个配置文件，并且内容为“AddType application/x-httpd-php .jpg(就是把所以jpg后缀的文件全都当作php文件来执行)”
+
+5、大小写绕过，抓包后修改后缀为.PHp
+
+7、空格绕过，抓包修改后缀，在后缀后面加上空格
+
+8、点绕过，抓包修改后缀，在后缀后面加上点(删掉空格还可以. .或者 . )
+
+9、文件流绕过，前提条件，必须是window的服务器，抓包修改后缀，并在后缀后面加上::$DATA,
+
+10、双拼绕过，抓包修改后缀，并在把后缀改成pphphp，这样后端去掉php，还剩下个p和hp组合在一起，又是php
+
+
+11、.user.ini配置文件绕过
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://hellow-word578.github.io/post/yue-quan-lou-dong/">
+              <h3 class="post-title">
+                越权漏洞
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://hellow-word578.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

